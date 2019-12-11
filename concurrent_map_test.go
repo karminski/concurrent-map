@@ -12,6 +12,10 @@ type Animal struct {
 	name string
 }
 
+type Counter struct {
+	num int
+}
+
 func TestMapCreation(t *testing.T) {
 	m := New()
 	if m == nil {
@@ -33,6 +37,24 @@ func TestInsert(t *testing.T) {
 
 	if m.Count() != 2 {
 		t.Error("map should contain exactly two elements.")
+	}
+}
+
+func TestMerge(t *testing.T) {
+	m := New()
+	c1 := Counter{12}
+	c2 := Counter{4}
+	merge := func (c1, c2 interface{}) (interface{}) {
+		c1c, _ := c1.(Counter)
+		c2c, _ := c2.(Counter)
+		c1c.num += c2c.num
+		return c1c
+	}
+	m.Set("c1", c1)
+	ret := m.Merge("c1", c2, merge)
+	retc, _ := ret.(Counter)
+	if retc.num != 16 {
+		t.Error("Merge malfunction")
 	}
 }
 
